@@ -1,0 +1,24 @@
+#######################################
+# Syntax Coloring Map For SimpleShiftRegisterController
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+ShiftRegister	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+shift		KEYWORD2
+silentShift	KEYWORD2
+display		KEYWORD2
+beginSilentShift		KEYWORD2
+endSilentShift   	KEYWORD2
+setup   	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
