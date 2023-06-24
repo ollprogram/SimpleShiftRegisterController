@@ -33,6 +33,6 @@ Examples are available [here](examples/)
 
 # Download and install
 
-You can find download the zip file in the releases. 
+You can find and download the zip file in the releases. 
 
 On arduino IDE select 'sketch > include library > add .ZIP library'
