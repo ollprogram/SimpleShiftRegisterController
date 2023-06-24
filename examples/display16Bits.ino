@@ -14,8 +14,8 @@ void setup() {
 }
 
 void loop() {
-  sr.display(0b0101010101010101);
+  sr.display16(0b0101010101010101);
   delay(1000);
-  sr.display(0b1010101010101010);
+  sr.display16(0b1010101010101010);
   delay(1000);
 }
