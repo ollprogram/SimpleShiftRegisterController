@@ -22,3 +22,6 @@ setup   	KEYWORD2
 #######################################
 # Constants (LITERAL1)
 #######################################
+
+SINGLE LITERAL1
+DUAL LITERAL1
