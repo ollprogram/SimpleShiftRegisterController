@@ -22,7 +22,8 @@ If not, see <https://www.gnu.org/licenses/>.
 # Description
 
 I made a very simple API in order to control a Shift Register like the 74hc595 without repeating the same code each time.
-
+This API also allows you to control multiple 74hc595 in cascade connection.
+ 
 ---
 
 # Usage
