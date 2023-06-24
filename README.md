@@ -4,7 +4,7 @@ A Shift Register Controller simple API for the 74hc595 adapted to small projects
 
 ---
 
-# Author and licence
+# Author and license
 
 Copyright (C) 2023 ollprogram
 
@@ -14,7 +14,7 @@ or (at your option) any later version.
 SimpleShiftRegisterController is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
-You should have received a copy of the [GNU General Public License](LICENCE) along with SimpleShiftRegisterController.
+You should have received a copy of the [GNU General Public License](LICENSE) along with SimpleShiftRegisterController.
 If not, see <https://www.gnu.org/licenses/>.
 
 ---
@@ -27,7 +27,7 @@ I made a very simple API in order to control a Shift Register like the 74hc595 w
 
 # Usage
 
-Examples are available [here](examples)
+Examples are available [here](examples/)
 
 ---
 
