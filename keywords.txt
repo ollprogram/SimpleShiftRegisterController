@@ -12,16 +12,15 @@ ShiftRegister	KEYWORD1
 # Methods and Functions (KEYWORD2)
 #######################################
 
-shift		KEYWORD2
-silentShift	KEYWORD2
-display		KEYWORD2
-beginSilentShift		KEYWORD2
+shift               KEYWORD2
+silentShift   	    KEYWORD2
+display		        KEYWORD2
+beginSilentShift	KEYWORD2
 endSilentShift   	KEYWORD2
-setup   	KEYWORD2
+setup   	        KEYWORD2
+allBitsHigh   	    KEYWORD2
+allBitsLow   	    KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
 #######################################
-
-SINGLE LITERAL1
-DUAL LITERAL1

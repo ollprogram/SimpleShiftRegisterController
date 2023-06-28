@@ -15,9 +15,6 @@
 #ifndef SHIFTREGISTER_H
 #define SHIFTREGISTER_H
 
-#define SINGLE 8
-#define DUAL 16
-
 #include "Arduino.h" 
 
 /**
@@ -31,9 +28,9 @@ class ShiftRegister{
   * @param ser The SER pin number which is used to set the new incoming value.
   * @param rck The RCK pin number which is used to copy the shift register values to the register for ouptuts.
   * @param srck The SRCK pin number which is used to shift to right the shift register.
-  * @param numberOfOutputs The number of outputs for this register.
+  * @param numberOfSRegister The number of 74hc595 registers linked together.
   */
-  ShiftRegister(uint8_t ser, uint8_t rck, uint8_t srck, int numberOfOutputs);
+  ShiftRegister(uint8_t ser, uint8_t rck, uint8_t srck, int numberOfSRegisters);
 
   /**
   * Setup the pinsMode to OUTPUT mode
@@ -68,29 +65,34 @@ class ShiftRegister{
   /**
   * Set the register data.
   * @param data The data array to send to the register.
+  * @param length The data array length.
   * It should be the same size as the number of outputs of your register.
   */
-  void display(bool data[]);
-
- /**
-  * Set the register data.
-  * @param data The data byte to send to the register.
-  * It should be the same size as the number of outputs of your register.
-  */
-  void display(uint8_t data);
+  void display(bool data[], int length);
 
   /**
   * Set the register data.
-  * @param data The data 2 bytes to send to the register.
+  * @param data The data 8 bytes to send to the register.
   * It should be the same size as the number of outputs of your register.
   */
-  void display16(uint16_t data);
+  void display(unsigned long data);
+
+  /**
+  * Reset all outputs to 0
+  * 
+  */
+  void allBitsLow();
+
+  /**
+   * Set all outputs to 1
+  */
+  void allBitsHigh();
 
   private:
   uint8_t din;
   uint8_t copy;
   uint8_t shifter;
-  int length;
+  int registersBits;
 };
 
 #endif

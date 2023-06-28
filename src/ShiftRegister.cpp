@@ -18,13 +18,13 @@
  * @param ser The SER pin number which is used to set the new incoming value.
  * @param rck The RCK pin number which is used to copy the shift register values to the register for ouptuts.
  * @param srck The SRCK pin number which is used to shift to right the shift register.
- * @param numberOfOutputs The number of outputs for this register.
+ * @param numberOfSRegister The number of 74hc595 registers linked together.
  */
-ShiftRegister::ShiftRegister(uint8_t ser, uint8_t rck, uint8_t srck, int numberOfOutputs){
+ShiftRegister::ShiftRegister(uint8_t ser, uint8_t rck, uint8_t srck, int numberOfSRegisters){
     this->din = ser;
     this->copy = rck;
     this->shifter = srck;
-    this->length = numberOfOutputs;
+    this->registersBits = numberOfSRegisters*8;
 }  
 
 /**
@@ -77,10 +77,11 @@ void ShiftRegister::shift(bool data){
 /**
  * Set the register data.
  * @param data The data array to send to the register.
+ * @param length The data array length.
  * It should be the same size as the number of outputs of your register.
  */
-void ShiftRegister::display(bool data[]){
-    if(sizeof(data)*8 < length) return;
+void ShiftRegister::display(bool data[], int length){
+    if(length > registersBits) length = registersBits;
     beginSilentShift();
     for(int i = length-1; i >= 0; i--){
         silentShift(data[i]);
@@ -90,15 +91,14 @@ void ShiftRegister::display(bool data[]){
 
 /**
  * Set the register data.
- * @param data The data byte to send to the register.
+ * @param data The data 8 bytes to send to the register.
  * It should be the same size as the number of outputs of your register.
  */
-void ShiftRegister::display(uint8_t data){
-    if(length < 8) return;
-    uint8_t mask = 0x1;
-    uint8_t bits = data;
+void ShiftRegister::display(unsigned long data){
+    unsigned long mask = 0x1;
+    unsigned long bits = data;
     beginSilentShift();
-    for(int i = length-1; i >= 0; i--){
+    for(int i = registersBits-1; i >= 0; i--){
         silentShift(bits & mask);
         bits = bits >> 1;
     }
@@ -106,18 +106,24 @@ void ShiftRegister::display(uint8_t data){
 }
 
 /**
- * Set the register data.
- * @param data The data 2 bytes to send to the register.
- * It should be the same size as the number of outputs of your register.
+ * Reset all outputs to 0
+ * 
  */
-void ShiftRegister::display16(uint16_t data){
-    if(length < 16) return;
-    uint16_t mask = 0x1;
-    uint16_t bits = data;
+void ShiftRegister::allBitsLow(){
     beginSilentShift();
-    for(int i = length-1; i >= 0; i--){
-        silentShift(bits & mask);
-        bits = bits >> 1;
+    for(int i = registersBits-1; i >= 0; i--){
+        silentShift(false);
+    }
+    endSilentShift();
+}
+
+/**
+ * Set all outputs to 1
+ */
+void ShiftRegister::allBitsHigh(){
+    beginSilentShift();
+    for(int i = registersBits-1; i >= 0; i--){
+        silentShift(true);
     }
     endSilentShift();
 }

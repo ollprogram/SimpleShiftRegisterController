@@ -3,9 +3,9 @@
 #define SER 13 // the next data to add to the register
 #define RCK 12 // the register validation 
 #define SRCK 8 // the shift register clock
-#define REGS 1 // shift register number
 //including the library.
 #include <ShiftRegister.h>
+#define REGS 1 // shift register number
 //instantiate 
 ShiftRegister sr(SER, RCK, SRCK, REGS);
 void setup() {
@@ -15,8 +15,8 @@ void setup() {
 }
 
 void loop() {
-  sr.display(0b01010101);
+  sr.allBitsLow();
   delay(1000);
-  sr.display(0b10101010);
+  sr.allBitsHigh();
   delay(1000);
 }

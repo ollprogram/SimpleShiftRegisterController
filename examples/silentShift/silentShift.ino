@@ -5,25 +5,27 @@
 #define SRCK 8 // the shift register clock
 //including the library.
 #include <ShiftRegister.h>
-#define OUTPUTS_SIZE SINGLE //number of ouputs of your shift register (SINGLE = 8, DUAL = 16)
+#define REGS 1 // shift register number
 //instantiate 
-ShiftRegister sr(SER, RCK, SRCK, OUTPUTS_SIZE);
+ShiftRegister sr(SER, RCK, SRCK, REGS);
 void setup() {
   //setup the arduino pins
   sr.setup();
+  sr.allBitsLow();//if you want to reset bits on startup
 }
+const int size = REGS*8;
 
 void loop() {
-  for(int i = 0; i < OUTPUTS_SIZE; i++){
+  for(int i = 0; i < size; i++){
     sr.shift(true);
     delay(100);
   }
-  for(int i = 0; i < OUTPUTS_SIZE; i++){
+  for(int i = 0; i < size; i++){
     sr.beginSilentShift();//begin a shift of the shift register before copying to the register of the outputs.
     for(int j = 0; j <= i; j++){
       sr.silentShift(false);
     }
-    for(int j = 0; j < OUTPUTS_SIZE-1-i; j++){
+    for(int j = 0; j < size-1-i; j++){
       sr.silentShift(true);
     }
     sr.endSilentShift();//display the result (copying to the register)
