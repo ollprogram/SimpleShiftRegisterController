@@ -17,6 +17,12 @@
 
 #include "Arduino.h" 
 
+typedef struct bool_cell {
+  struct bool_cell * next;
+  struct bool_cell * before;
+  bool value;
+} bool_cell_t;
+
 /**
 * @author ollprogram
 * A class which represent a simple shift registor without the "reset" and the "enable" pins
@@ -31,6 +37,8 @@ class ShiftRegister{
   * @param numberOfSRegister The number of 74hc595 registers linked together.
   */
   ShiftRegister(uint8_t ser, uint8_t rck, uint8_t srck, int numberOfSRegisters);
+
+  ~ShiftRegister();
 
   /**
   * Setup the pinsMode to OUTPUT mode
@@ -93,6 +101,40 @@ class ShiftRegister{
   uint8_t copy;
   uint8_t shifter;
   int registersBits;
+  /* BOOL LIST */
+  bool_cell_t * head;
+  int list_size;
+  /**
+   * Remove the last element of the list.
+  */
+  void removeLast();
+
+  /**
+   * The new cell containing the new value become the new head.
+   * @param b The boolean to add.
+  */
+  void addHead(bool b);
+
+  /**
+   * Shift the list and add a new head element, the last tail element is deleted.
+   * @param b The boolean to add.
+  */
+  void shiftList(bool b);
+
+  /**
+   * Creates a new element for a list.
+   * @param b The value of the new element to create.
+   * @param next The next element address.
+   * @param before The before element address.
+   * @return A new element for a list linked with the next and the before element.
+   * If the next or before fields are null, they will point to the new element itself.
+  */
+  bool_cell_t * createElement(bool b, bool_cell_t * before, bool_cell_t * next);
+
+  /**
+   * Delete the list
+  */
+  void deleteList();
 };
 
 #endif

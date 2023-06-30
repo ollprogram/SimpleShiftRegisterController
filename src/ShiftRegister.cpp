@@ -21,10 +21,12 @@
  * @param numberOfSRegister The number of 74hc595 registers linked together.
  */
 ShiftRegister::ShiftRegister(uint8_t ser, uint8_t rck, uint8_t srck, int numberOfSRegisters){
-    this->din = ser;
-    this->copy = rck;
-    this->shifter = srck;
-    this->registersBits = numberOfSRegisters*8;
+    din = ser;
+    copy = rck;
+    shifter = srck;
+    registersBits = numberOfSRegisters*8;
+    head = nullptr;
+    list_size = 0;
 }  
 
 /**
@@ -34,6 +36,9 @@ void ShiftRegister::setup(){
     pinMode(din, OUTPUT);
     pinMode(copy, OUTPUT);
     pinMode(shifter, OUTPUT);
+    Serial.begin(9600);
+    Serial.println();
+    Serial.println();
 }
 
 /**
@@ -62,6 +67,7 @@ void ShiftRegister::silentShift(bool data){
     if(data) digitalWrite(din, HIGH);
     else digitalWrite(din, LOW);
     digitalWrite(shifter, HIGH);
+    shiftList(data);
 }
 
 /** 
@@ -126,4 +132,87 @@ void ShiftRegister::allBitsHigh(){
         silentShift(true);
     }
     endSilentShift();
+}
+
+/**
+   * Remove the last element of the list.
+  */
+void ShiftRegister::removeLast(){
+    if(head == nullptr) return;
+    bool_cell_t * last_element = head->before;
+    bool_cell_t * before_last = last_element->before;
+    head->before = before_last;
+    before_last->next = head;
+    if(last_element == head) head = nullptr;
+    delete last_element;
+    list_size--;
+}
+
+/**
+ * The new cell containing the new value become the new head.
+ * @param b The boolean to add.
+ */
+void ShiftRegister::addHead(bool b){
+    if(head == nullptr) {
+        head = createElement(b, nullptr, nullptr);
+        list_size++;
+        return;
+    }
+    bool_cell_t * last_element = head->before;
+    bool_cell_t * element = createElement(b, last_element, head);
+    head->before = element;
+    last_element->next = element;
+    head = element;
+    list_size++;
+}
+
+/**
+ * Shift the list and add a new head element, the last tail element is deleted.
+ * @param b The boolean to add.
+ */
+void ShiftRegister::shiftList(bool b){
+    addHead(b);
+    if(list_size > registersBits) removeLast();
+    //TODO remove
+    bool_cell_t * e = head;
+    Serial.print(e->value);
+    Serial.print(",");
+    e = e->next;
+    while(e != head){
+        Serial.print(e->value);
+        Serial.print(",");
+        e = e->next;//changing?
+    }
+    Serial.println(list_size);
+}
+
+/**
+ * Creates a new element for a list.
+ * @param b The value of the new element to create.
+ * @param next The next element address.
+ * @param before The before element address.
+ * @return A new element for a list linked with the next and the before element.
+ * If the next or before fields are null, they will point to the new element itself.
+ */
+bool_cell_t * ShiftRegister::createElement(bool b, bool_cell_t * before, bool_cell_t * next){
+    bool_cell_t * element = new bool_cell_t;
+    element->value = b;
+    if(before == nullptr) element->before = element;
+    else element->before = before;
+    if(next == nullptr) element->next = element;
+    else element->next = next;
+    return element;
+}
+
+/**
+ * Delete the list
+ */
+void ShiftRegister::deleteList(){
+    while(head != nullptr && list_size > 0){
+        removeLast();
+    }
+}
+
+ShiftRegister::~ShiftRegister(){
+    deleteList();
 }
