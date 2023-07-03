@@ -27,6 +27,7 @@ ShiftRegister::ShiftRegister(uint8_t ser, uint8_t rck, uint8_t srck, int numberO
     registersBits = numberOfSRegisters*8;
     head = nullptr;
     list_size = 0;
+    initList(registersBits);
 }  
 
 /**
@@ -36,9 +37,8 @@ void ShiftRegister::setup(){
     pinMode(din, OUTPUT);
     pinMode(copy, OUTPUT);
     pinMode(shifter, OUTPUT);
+    //to remove
     Serial.begin(9600);
-    Serial.println();
-    Serial.println();
 }
 
 /**
@@ -60,13 +60,11 @@ void ShiftRegister::endSilentShift(){
 /**
  * Should be called between beginSilentShift and endSilentShift, 
  * make a sigle shift without copying to the output register.
+ * Time Complexity: O(1) where n is the number of outputs.
  * @param data The data to shift into the register. 0 or 1.
  */
 void ShiftRegister::silentShift(bool data){
-    digitalWrite(shifter, LOW);
-    if(data) digitalWrite(din, HIGH);
-    else digitalWrite(din, LOW);
-    digitalWrite(shifter, HIGH);
+    silentShiftWithoutMemory(data);
     shiftList(data);
 }
 
@@ -173,17 +171,6 @@ void ShiftRegister::addHead(bool b){
 void ShiftRegister::shiftList(bool b){
     addHead(b);
     if(list_size > registersBits) removeLast();
-    //TODO remove
-    bool_cell_t * e = head;
-    Serial.print(e->value);
-    Serial.print(",");
-    e = e->next;
-    while(e != head){
-        Serial.print(e->value);
-        Serial.print(",");
-        e = e->next;//changing?
-    }
-    Serial.println(list_size);
 }
 
 /**
@@ -215,4 +202,71 @@ void ShiftRegister::deleteList(){
 
 ShiftRegister::~ShiftRegister(){
     deleteList();
+}
+
+void print_all(bool_cell_t * head){
+    bool_cell_t * e = head;
+    Serial.print("[");
+    while(e != head->before){
+        Serial.print(e->value);
+        Serial.print(",");
+        e = e->next;
+    }
+    Serial.print(e->value);
+    Serial.print("]");
+    Serial.println();
+}
+
+/**
+ * Set the value for a specified output number without changing other values.
+ * Time Complexity: O(n) where n is the number of outputs.
+ * @param index The output index inside of your registers.
+ * @param value The value to set to this output (HIGH or LOW).
+ * @warning If you want to make simple shifts use shift() or silentShift() instead.
+ */
+void ShiftRegister::writeTo(int index, bool value){
+    if(index < 0 || index >= registersBits)return;
+    beginSilentShift();
+    bool_cell_t * end = head->before;
+    bool_cell_t * e = end;
+    int end_index = registersBits-1;
+    if(index == end_index){
+        end->value = value;
+        silentShiftWithoutMemory(value);
+    }
+    e = e->before;
+    int i = end_index-1;
+    while(e != end){
+        if(i == index){
+            e->value = value;
+            silentShiftWithoutMemory(value);
+        }
+        else silentShiftWithoutMemory(e->value);
+        e = e->before;
+        i--;
+    }
+    endSilentShift();
+
+    print_all(head);
+}
+
+/**
+ * Shift without updating the memory
+ * @param data The value to shift into the registers.
+ */
+void ShiftRegister::silentShiftWithoutMemory(bool data){
+    digitalWrite(shifter, LOW);
+    if(data) digitalWrite(din, HIGH);
+    else digitalWrite(din, LOW);
+    digitalWrite(shifter, HIGH);
+}
+
+/**
+ * Initialize the list of bits.
+* @param size The size of the list. 
+*/
+void ShiftRegister::initList(int size){
+    for(int i = 0; i < size; i++){
+        addHead(false);
+    }
 }

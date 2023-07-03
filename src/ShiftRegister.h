@@ -60,6 +60,7 @@ class ShiftRegister{
   /**
   * Should be called between beginSilentShift and endSilentShift, 
   * make a sigle shift without copying to the output register.
+  * Time Complexity: O(1) where n is the number of outputs.
   * @param data The data to shift into the register. 0 or 1.
   */
   void silentShift(bool data);
@@ -95,6 +96,15 @@ class ShiftRegister{
    * Set all outputs to 1
   */
   void allBitsHigh();
+
+  /**
+   * Set the value for a specified output number without changing other values.
+   * Complexity: O(n) where n is the number of outputs.
+   * @warning If you want to make simple shifts use shift() or silentShift() instead.
+   * @param index The output index inside of your registers.
+   * @param value The value to set to this output (HIGH or LOW).
+  */
+  void writeTo(int index, bool value);
 
   private:
   uint8_t din;
@@ -135,6 +145,18 @@ class ShiftRegister{
    * Delete the list
   */
   void deleteList();
+
+  /**
+   * Shift without updating the memory
+   * @param data The value to shift into the registers.
+  */
+  void silentShiftWithoutMemory(bool data);
+
+ /**
+ * Initialize the list of bits.
+* @param size The size of the list. 
+*/
+  void initList(int size);
 };
 
 #endif

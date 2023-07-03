@@ -23,7 +23,7 @@ If not, see <https://www.gnu.org/licenses/>.
 
 I made a very simple API in order to control a Shift Register like the 74hc595 without repeating the same code each time.
 This API also allows you to control multiple 74hc595 in cascade connection. 
- 
+If you want your program to use less heap memory, use version 1.0.1 instead of 1.1.0.
 ---
 
 ## Usage
