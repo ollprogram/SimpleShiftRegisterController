@@ -19,6 +19,6 @@ const int size = REGS*8;
 void loop() {
   sr.writeTo(0, HIGH);
   delay(1000);
-  sr.writeTo(7, HIGH);
+  sr.writeTo(0, LOW);
   delay(1000);
 }
