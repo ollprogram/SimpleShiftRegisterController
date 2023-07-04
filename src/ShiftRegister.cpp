@@ -230,23 +230,17 @@ void ShiftRegister::writeTo(int index, bool value){
     bool_cell_t * end = head->before;
     bool_cell_t * e = end;
     int end_index = registersBits-1;
-    if(index == end_index){
-        end->value = value;
-        silentShiftWithoutMemory(value);
-    }
+    if(index == end_index)end->value = value;
+    silentShiftWithoutMemory(end->value);
     e = e->before;
     int i = end_index-1;
     while(e != end){
-        if(i == index){
-            e->value = value;
-            silentShiftWithoutMemory(value);
-        }
-        else silentShiftWithoutMemory(e->value);
+        if(i == index)e->value = value;
+        silentShiftWithoutMemory(e->value);
         e = e->before;
         i--;
     }
     endSilentShift();
-
     print_all(head);
 }
 
